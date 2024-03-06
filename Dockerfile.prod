@@ -1,1 +1,1 @@
-FROM tomcat:jdk8-openjdk
+FROM tomcat:8-alpine
