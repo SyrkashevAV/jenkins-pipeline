@@ -1,2 +1,2 @@
-FROM tomcat:8-alpine
+FROM tomcat:8
 RUN apt install sshpass clean -y

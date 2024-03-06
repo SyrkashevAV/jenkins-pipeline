@@ -1,14 +1,13 @@
 pipeline {
   agent {
     docker {
-      withDockerRegistry(credentialsId: '364249c9-c06b-4dff-9145-411945a579bf', url: 'https://hub.docker.com/repository/docker') {
         image 'syrkashevav/boxfuse:v1.0'
+        args '-v /var/run/docker.sock:/var/run/docker.sock'
       }
     }
-  }
 
   environment {
-    NEXUS_URL = "158.160.106.226:8123"
+    NEXUS_URL = "178.154.221.16:8123"
     PRODE = "178.154.200.198"
     USERNAME = "admin"
     PASSWORD = "admin"
@@ -22,10 +21,10 @@ pipeline {
 
     stage('git clone builder') {
       steps {
-        sh 'sudo rm -rf boxfuse-sample-java-war-hello'
-        git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
+        sh 'rm -rf boxfuse-sample-java-war-hello'
+        sh 'git clone https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
         dir("boxfuse-sample-java-war-hello") {
-            sh 'sudo mvn package'
+            sh 'mvn package'
             sh 'pwd'
             sh 'ls -la'
         }
@@ -34,12 +33,13 @@ pipeline {
 
     stage('Build dockerfile, push to Nexus and run docker') {
       steps {
-        dir('/jenkins') {
-          git 'https://github.com/SyrkashevAV/jenkins-pipeline.git'
-          sh 'pwd'
-          sh 'ls -la'
-          sh 'docker build mywebapp:v5.0 -f dockerfile.prod -t .'
-        }
+          git branch: 'main', credentialsId: '24708757-3501-4d51-9709-efecde774cbb', url: 'https://github.com/SyrkashevAV/jenkins-pipeline.git'
+            dir('/var/lib/jenkins/workspace/Docker-build-pipeline') {
+            sh 'echo 555555'
+            sh 'pwd'
+            sh 'ls -la'
+            sh 'docker build -t mywebapp:v5.0 /var/lib/jenkins/workspace/Docker-build-pipeline/dockerfile.prod'
+          }
       }
     }
 
