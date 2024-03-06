@@ -1,2 +1,3 @@
 FROM tomcat:8
 RUN apt install sshpass clean -y
+RUN mkdir /.docker
