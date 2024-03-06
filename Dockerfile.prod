@@ -1,2 +1,2 @@
 FROM tomcat:jdk8-openjdk
-RUN apt install sshpass clean -y
+RUN apt install sshpass -y
