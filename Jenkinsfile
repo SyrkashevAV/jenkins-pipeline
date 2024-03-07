@@ -25,15 +25,18 @@ pipeline {
     stage('Build dockerfile, push to Nexus and run docker') {
       steps {
         dir('jenkins-pipeline') {
-            sh 'docker build -f Dockerfile.prod -t mywebapp:v5.0 .'
+            sh 'docker build -f Dockerfile.prod -t mywebapp2:v1.0 .'
         }
       }
     }
 
     stage("Push to DockerHub ") {
         steps {
-                sh 'docker tag mywebapp:v5.0 syrkashevav/mywebapp:v5.0'
-                sh 'docker push syrkashevav/mywebapp:v5.0'
+            withCredentials([usernamePassword(credentialsId: '24708757-3501-4d51-9709-efecde774cbb', passwordVariable: 'admin', usernameVariable: 'root')]) {
+                sh 'docker login -u syrkashev-av@yandex.ru -p Pilot_Jgnbvev_1966'
+                sh 'docker tag mywebapp2:v1.0 syrkashevav/mywebapp2:v1.0'
+                sh 'docker push syrkashevav/mywebapp2:v1.0'
+            }
         }
     }
 
