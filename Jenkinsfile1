@@ -1,0 +1,17 @@
+pipeline {
+    agent any
+  stages {
+    stage('Push image') {
+        agent {
+            docker {
+                image 'syrkashevav/boxfuse:v1.0'
+                args '-v /var/run/docker.sock:/var/run/docker.sock --privileged'
+            }
+        }
+
+        steps {
+                sh 'docker push syrkashevav/mywebapp2:v1.0'
+        }
+    }
+  }
+}
