@@ -25,17 +25,18 @@ pipeline {
     stage('Build dockerfile, push to Nexus and run docker') {
       steps {
         dir('jenkins-pipeline') {
-            sh 'docker build -f Dockerfile.prod -t mywebapp2:v1.0 .'
+            sh 'docker build -f Dockerfile.prod -t mywebapp3:v2.0 .'
         }
       }
     }
 
-    stage("Push to DockerHub ") {
+    stage('Push to DockerHub') {
         steps {
-            withCredentials([usernamePassword(credentialsId: '24708757-3501-4d51-9709-efecde774cbb', passwordVariable: 'admin', usernameVariable: 'root')]) {
-                sh 'docker login -u syrkashev-av@yandex.ru -p Pilot_Jgnbvev_1966'
-                sh 'docker tag mywebapp2:v1.0 syrkashevav/mywebapp2:v1.0'
-                sh 'docker push syrkashevav/mywebapp2:v1.0'
+            script {
+                    withDockerRegistry(credentialsId: 'a07d152b-80fe-4cc3-a4d4-f219d14f68f8') {
+                      sh 'docker tag mywebapp3:v2.0 syrkashevav/mywebapp3:v2.0'
+                      sh 'docker push syrkashevav/mywebapp3:v2.0'
+                    }
             }
         }
     }
@@ -45,5 +46,5 @@ pipeline {
             deploy adapters: [tomcat9(credentialsId: '43bd4659-ebc3-40f1-ba49-1d219980b31d', path: '', url: 'http://178.154.200.198:8080')], contextPath: 'mywebapp:v5.0', war: 'target/*.war'
       }
     }
- }
+  }
 }
