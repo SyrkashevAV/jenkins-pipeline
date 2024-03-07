@@ -1,1 +1,1 @@
-FROM tomcat:9-alpine
+FROM ubuntu:18.04
