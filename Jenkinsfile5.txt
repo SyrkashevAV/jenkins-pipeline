@@ -30,7 +30,7 @@ pipeline {
       }
     }
 
-    stage('Push to DockerHub') {
+    stage('Docker image tag') {
         steps {
                 sh 'docker tag mywebapp2:v1.0 syrkashevav/mywebapp2:v1.0'
         }
