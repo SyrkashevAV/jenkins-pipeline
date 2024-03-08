@@ -41,20 +41,14 @@ pipeline {
         }
     }
 
- stage('Deploy to Production') {
+    stage('Deploy to Production') {
       steps {
-        withCredentials([usernamePassword(credentialsId: '64234792-3d30-44bb-a278-6a420e7a93cc', passwordVariable: 'admin', usernameVariable: 'root')]) {
-        sh '''
-	          sshpass -p admin  ssh -o "StrictHostKeyChecking=no"  root@178.154.200.198
+              sh 'ssh-keyscan -H 158.160.118.171 >> ~/.ssh/known_hosts'
+              sh '''ssh root@158.160.118.171 << EOF
+              docker pull syrkashevav/mywebapp3:v2.0
+              EOF'''
 
-            script {
-                withDockerRegistry(credentialsId: 'a07d152b-80fe-4cc3-a4d4-f219d14f68f8') {
-                    sh 'docker pull syrkashevav/mywebapp3:v2.0'
-                }
-            }
-            deploy adapters: [tomcat9(credentialsId: '43bd4659-ebc3-40f1-ba49-1d219980b31d', path: '', url: 'http://178.154.200.198:8080')], contextPath: 'mywebapp:v5.0', war: 'target/*.war'
-        '''
-        }
+              deploy adapters: [tomcat9(credentialsId: '43bd4659-ebc3-40f1-ba49-1d219980b31d', path: '', url: 'http://158.160.118.171:8080')], contextPath: 'mywebapp:v5.0', war: 'target/*.war'
       }
     }
   }
