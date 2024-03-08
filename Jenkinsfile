@@ -43,12 +43,9 @@ pipeline {
 
     stage('Deploy to Production') {
       steps {
-              sh 'ssh-keyscan -H 158.160.118.171 >> ~/.ssh/known_hosts'
-              sh '''ssh root@158.160.118.171 << EOF
-              docker pull syrkashevav/mywebapp3:v2.0
-              EOF'''
-
-              deploy adapters: [tomcat9(credentialsId: '43bd4659-ebc3-40f1-ba49-1d219980b31d', path: '', url: 'http://158.160.118.171:8080')], contextPath: 'mywebapp:v5.0', war: 'target/*.war'
+            sshagent(['b6aef2a9-dc31-4520-ba25-efc9cfa61070']) {
+            sh 'docker pull syrkashevav/mywebapp3:v2.0'
+            }
       }
     }
   }
