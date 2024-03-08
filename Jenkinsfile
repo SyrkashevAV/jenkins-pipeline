@@ -43,8 +43,12 @@ pipeline {
 
     stage('Deploy to Production') {
       steps {
-            sshagent(['b6aef2a9-dc31-4520-ba25-efc9cfa61070']) {
-            sh 'docker pull syrkashevav/mywebapp3:v2.0'
+
+            withDockerRegistry(credentialsId: 'a07d152b-80fe-4cc3-a4d4-f219d14f68f8') {
+              sshagent(['b6aef2a9-dc31-4520-ba25-efc9cfa61070']) {
+                      sh 'docker pull syrkashevav/mywebapp3:v2.0'
+                      sh 'docker images'
+                }
             }
       }
     }
