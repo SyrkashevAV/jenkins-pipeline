@@ -43,14 +43,13 @@ pipeline {
 
     stage('Deploy to Production') {
       steps {
-
-            withDockerRegistry(credentialsId: 'a07d152b-80fe-4cc3-a4d4-f219d14f68f8') {
-              sshagent(['b6aef2a9-dc31-4520-ba25-efc9cfa61070']) {
-                      sh 'docker pull syrkashevav/mywebapp3:v2.0'
-                      sh 'docker images'
-                }
+              sh 'mkdir -p ~/.ssh && ssh-keyscan -H 84.201.134.238 >> ~/.ssh/known_hosts'
+              sh 'ls -la ~/.ssh'
+              sh 'cat ~/.ssh/known_hosts'
+              sh '''ssh -tt -v root@84.201.134.238 << EOF
+              docker pull syrkashevav/mywebapp3:v2.0
+              EOF'''
             }
-      }
     }
   }
 }
