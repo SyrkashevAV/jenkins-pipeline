@@ -45,13 +45,19 @@ pipeline {
       steps {
               sshagent(['8d6463fc-c7ca-4ca9-95ad-4179b8edaf2d']) {
                 withCredentials([sshUserPrivateKey(credentialsId: '254a11ec-98c5-492f-882a-25c4bd6375c1', keyFileVariable: 'keyfile', passphraseVariable: 'admin', usernameVariable: 'root')]) {
-                sh '''
-                  mkdir -p ~/.ssh && ssh-keyscan -H 158.160.36.155 >> ~/.ssh/known_hosts
-                  scp -vvv -o StrictHostKeyChecking=no ~/.ssh/id_rsa jenkins@158.160.36.155:~/.ssh/id_rsa
-                  ls -la ~/.ssh
-                  cat ~/.ssh/known_hosts
-                  docker pull syrkashevav/mywebapp3:v2.0
-                  '''
+                  script {
+                    sh '''
+                    #!/bin/bash
+                    mkdir -p ~/.ssh
+                    ssh-keyscan -t rsa 158.160.36.155 >> ~/.ssh/known_hosts
+                    ssh -vvv -t -t -o StrictHostKeyChecking=no 158.160.36.155
+
+                    scp -vvv -o StrictHostKeyChecking=no ~/.ssh/id_rsa jenkins@158.160.36.155:~/.ssh/id_rsa
+                    ls -la ~/.ssh
+                    cat ~/.ssh/known_hosts
+                    docker pull syrkashevav/mywebapp3:v2.0
+                    '''
+                  }
                 }
               }
       }
