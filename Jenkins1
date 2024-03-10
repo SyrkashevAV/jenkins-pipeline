@@ -1,0 +1,4 @@
+withCredentials([sshUserPrivateKey(credentialsId: 'ssh-credentials-id', keyFileVariable: 'keyfile')])   {
+withCredentials([sshUserPrivateKey(credentialsId: '254a11ec-98c5-492f-882a-25c4bd6375c1', keyFileVariable: 'keyfile', passphraseVariable: 'admin', usernameVariable: 'root')]) {
+    sh "mkdir -p ~/.ssh && cp ${keyfile} ~/.ssh/id_rsa" other_stuff
+}

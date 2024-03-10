@@ -43,13 +43,18 @@ pipeline {
 
     stage('Deploy to Production') {
       steps {
-              sh 'mkdir -p ~/.ssh && ssh-keyscan -H 84.201.134.238 >> ~/.ssh/known_hosts'
-              sh 'ls -la ~/.ssh'
-              sh 'cat ~/.ssh/known_hosts'
-              sh '''ssh -tt -v root@84.201.134.238 << EOF
-              docker pull syrkashevav/mywebapp3:v2.0
-              EOF'''
-            }
+              sshagent(['8d6463fc-c7ca-4ca9-95ad-4179b8edaf2d']) {
+                withCredentials([sshUserPrivateKey(credentialsId: '254a11ec-98c5-492f-882a-25c4bd6375c1', keyFileVariable: 'keyfile', passphraseVariable: 'admin', usernameVariable: 'root')]) {
+                sh '''
+                  mkdir -p ~/.ssh && ssh-keyscan -H 158.160.36.155 >> ~/.ssh/known_hosts
+                  scp -vvv -o StrictHostKeyChecking=no ~/.ssh/id_rsa jenkins@158.160.36.155:~/.ssh/id_rsa
+                  ls -la ~/.ssh
+                  cat ~/.ssh/known_hosts
+                  docker pull syrkashevav/mywebapp3:v2.0
+                  '''
+                }
+              }
+      }
     }
   }
 }
